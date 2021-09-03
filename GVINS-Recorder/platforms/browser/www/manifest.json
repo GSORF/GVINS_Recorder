@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "GVINS-Recorder",
+  "short_name": "GVINS-Recorder",
+  "version": "com.lwtv.gvins_recorder",
+  "description": "A recording app for synchronized GPS, Visual and Inertial Measurement.",
+  "author": "Langwasser TV Redaktion",
+  "icons": [],
+  "start_url": "index.html"
+}
