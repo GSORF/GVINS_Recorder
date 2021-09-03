@@ -1,0 +1,20 @@
+{
+    "android": {
+        "debug": {
+            "keystore": "../CUSTOM_KEYSTORE.keystore",
+            "storePassword": "PASSWORD_SECRET",
+            "alias": "ALIAS_SECRET",
+            "password" : "PASSWORD_SECRET",
+            "keystoreType": "",
+            "packageType": "apk"
+        },
+        "release": {
+            "keystore": "../CUSTOM_KEYSTORE.keystore",
+            "storePassword": "PASSWORD_SECRET",
+            "alias": "ALIAS_SECRET",
+            "password" : "PASSWORD_SECRET",
+            "keystoreType": "",
+            "packageType": "bundle"
+        }
+    }
+}
