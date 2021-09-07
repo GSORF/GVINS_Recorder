@@ -1,36 +1,110 @@
 class SensorGyroscope {
-    constructor(elementID) {
-      this.elementID = elementID;
-      this.element = document.getElementById(this.elementID);
-      this.isEnabled = false;
+  constructor(elementID) {
+    this.elementID = elementID;
+    this.element = document.getElementById(this.elementID);
+    this.isEnabled = false;
+    this.isAvailable = false;
 
-      this.isRecording = false;
-      this.data = new Array();
-      
-      this.renderHTML();
-    }
+    this.isRecording = false;
+    this.data = new Array();
+    
+    // Gyroscope specific member variables
+    try {
+      this.gyroscope = new Gyroscope({ referenceFrame: 'device', frequency: 60 });
+
+      this.gyroscope.addEventListener('error', e => {
+        // Handle runtime errors.
+        if (e.error.name === 'NotAllowedError') {
+            // Branch to code for requesting permission.
+        } else if (e.error.name === 'NotReadableError' ) {
+            log('Cannot connect to the gyroscope.');
+        }
+      });
+
+      this.gyroscope.addEventListener('reading', ev => {
   
-      /* GLOBAL / PUBLIC methods */
-    enable() {
-      log("Gyroscope enabled");
-      this.isEnabled = true;
-      this.renderHTML();
+        if(this.isRecording)
+        {
+          var gyroscope_dataframe = {time_ms: new Date().getTime(),
+            x: this.gyroscope.x,
+            y: this.gyroscope.y,
+            z: this.gyroscope.z
+          };
+          this.data.push(gyroscope_dataframe);
+        }
+        var dataHTML = "";
+        
+        dataHTML += "Angular velocity along the X-axis<br />" + this.gyroscope.x + " rad/s.<br />";
+        dataHTML += "Angular velocity along the Y-axis<br />" + this.gyroscope.y + " rad/s.<br />";
+        dataHTML += "Angular velocity along the Z-axis<br />" + this.gyroscope.z + " rad/s.";
+    
+        document.getElementById("gyroscopeData").innerHTML = dataHTML;
+      });
+
+      this.isAvailable = true;
+      log("Gyroscope constructor called!");
+    } catch (error) {
+      // Handle construction errors.
+      if (error.name === 'SecurityError') {
+        // See the note above about feature policy.
+        log('Gyroscope construction was blocked by a feature policy.');
+      } else if (error.name === 'ReferenceError') {
+        log('Gyroscope is not supported by the User Agent.');
+      } else {
+        log(error);
+        throw error;
+      }
     }
-    disable() {
-      log("Gyroscope disabled");
-      this.isEnabled = false;
-      this.renderHTML();
+    this.renderHTML();
+  }
+  
+  /* GLOBAL / PUBLIC methods */
+  enable() {
+    if(this.isAvailable == false)
+    {
+      return;
+    }
+      
+    log("Gyroscope enabled");
+    this.isEnabled = true;
+    this.renderHTML();
+
+    this.gyroscope.start();
+    
+  }
+  disable() {
+    if(this.isAvailable == false)
+    {
+      return;
     }
     
-    update() {
-      log("Gyroscope updated");
-    }
+    log("Gyroscope disabled");
+    this.isEnabled = false;
+    this.renderHTML();
+
+    this.gyroscope.stop();
     
-    renderHTML() {
-      log("Gyroscope rendered");
-
-      var html = '';
-
+  }
+  
+  toggleRecording(record) {
+    this.isRecording = record;
+    if(record)
+    {
+      log("Gyroscope recording started.");
+    }
+    else
+    {
+      log("Gyroscope recording stopped.")
+    }
+  }
+    
+  renderHTML() {
+    log("Gyroscope rendered");
+    
+    var html = '';
+    
+    if(this.isAvailable)
+    {
       html += '<div class="card mb-3 rounded-3 shadow-sm">';
       html += ' <div class="card-header py-3">';
       html += '   <h4 class="my-0 fw-normal">Gyroscope</h4>';
@@ -49,79 +123,27 @@ class SensorGyroscope {
       html += ' </div>';
       html += ' <div class="card-body">';
       html += '   <h1 id="gyroscopeTimestamp" class="card-title pricing-card-title">{TIMESTAMP}</h1>';
-      html += '   <p id="gyroscopeData">No Gyro data yet.</p>';
-      if(this.isEnabled)
-      {
-        html += '   <button id="btnEnableGyroscope" onclick="javascript:sensorGyroscope.disable();">Disable Gyroscope Sensor</button>';
-      }
-      else
-      {
-        html += '   <button id="btnDisableGyroscope" onclick="javascript:sensorGyroscope.enable();">Enable Gyroscope Sensor</button>';
-      }
+      html += '   <p id="gyroscopeData">No Gyroscope data yet.</p>';
       html += ' </div>';
       html += '</div>';
-
-      this.element.innerHTML = html;
     }
-    save() {
-      log("Gyroscope saved");
+    else
+    {
+      html += '<div class="card mb-3 rounded-3 shadow-sm">';
+      html += ' <div class="card-header py-3">';
+      html += '   <h4 class="my-0 fw-normal">Gyroscope</h4>';
+      html += ' </div>';
+      html += ' <div class="card-body">';
+      html += '   <p id="gyroscopeData">Gyroscope is not available on this device.</p>';
+      html += ' </div>';
+      html += '</div>';
     }
-      /* PRIVATE (sensor specific) methods */
-  
-  
-  
+    
+    this.element.innerHTML = html;
   }
-  
-  
-  
-/* 
-
-
-let gyroscope = null;
-let gyroscope_debug = document.getElementById("gyroscopeElement");
-try {
-    gyroscope = new Gyroscope({ referenceFrame: 'device', frequency: 60 });
-    gyroscope.addEventListener('error', event => {
-        // Handle runtime errors.
-        if (event.error.name === 'NotAllowedError') {
-            // Branch to code for requesting permission.
-        } else if (event.error.name === 'NotReadableError' ) {
-            console.log('Cannot connect to the sensor.');
-        }
-    });
-    gyroscope.addEventListener('reading', e => {
-		gyroscope_debug.innerHTML = "Angular velocity along the X-axis<br />" + gyroscope.x + " rad/s.<br />" + "Angular velocity along the Y-axis<br />" + gyroscope.y + " rad/s.<br />" + "Angular velocity along the Z-axis<br />" + gyroscope.z + " rad/s.";
-
-        gyroscope_dataframe = {time_ms: new Date().getTime(),
-            x: gyroscope.x,
-            y: gyroscope.y,
-            z: gyroscope.z
-        };
-        sensorRecorder.onGyroscopeData(gyroscope_dataframe);
-          
-
-    });
-    gyroscope.start();
-} catch (error) {
-    // Handle construction errors.
-    if (error.name === 'SecurityError') {
-        // See the note above about feature policy.
-        console.log('Gyroscope construction was blocked by a feature policy.');
-    } else if (error.name === 'ReferenceError') {
-        console.log('Gyroscope is not supported by the User Agent.');
-    } else {
-        throw error;
-    }
-	gyroscope_debug.innerHTML = error;
+  getData() {
+    log("Exporting Gyroscope...");
+    return this.data;
+  }
+  /* PRIVATE (sensor specific) methods */
 }
-
-
-
-
-
-*/
-
-
-
-
-

@@ -55,16 +55,7 @@ class Viewer3D {
 	  html += '   </div>';
 	  html += ' </div>';
 	  html += ' <div class="card-body">';
-	  html += '   <h1 id="viewer_timestamp" class="card-title pricing-card-title">{TIMESTAMP (REMOVE!)}</h1>';
 	  html += '   <canvas id="viewer_3D" class="mb-3" height="200"></canvas>';
-	  if(this.isEnabled)
-	  {
-		html += '   <button id="btnEnableViewer" onclick="javascript:viewer3D.disable();">Disable Viewer</button>';
-	  }
-	  else
-	  {
-		html += '   <button id="btnDisableViewer" onclick="javascript:viewer3D.enable();">Enable Viewer</button>';
-	  }
 	  html += ' </div>';
 	  html += '</div>';
   

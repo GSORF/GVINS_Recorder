@@ -48,16 +48,21 @@ class SensorGPS {
 
   }
   
-  update() {
-    log("GPS updated");
-    
+  toggleRecording(record) {
+    this.isRecording = record;
+    if(record)
+    {
+      log("GPS recording started.");
+    }
+    else
+    {
+      log("GPS recording stopped.")
+    }
   }
   
   renderHTML() {
     log("GPS rendered");
     
-
-
     var html = '';
     
     html += '<div class="card mb-3 rounded-3 shadow-sm">';
@@ -79,14 +84,6 @@ class SensorGPS {
     html += ' <div class="card-body">';
     html += '   <h1 id="gpsTimestamp" class="card-title pricing-card-title">{TIMESTAMP}</h1>';
     html += '   <p id="gpsData">No GPS data yet.</p>';
-    if(this.isEnabled)
-    {
-      html += '   <button id="btnEnableGPS" onclick="javascript:sensorGPS.disable();">Disable GPS Sensor</button>';
-    }
-    else
-    {
-      html += '   <button id="btnDisableGPS" onclick="javascript:sensorGPS.enable();">Enable GPS Sensor</button>';
-    }
     html += ' </div>';
     html += '</div>';
 
@@ -94,7 +91,7 @@ class SensorGPS {
     
   }
   getData() {
-    console.log("Exporting GPS...");
+    log("Exporting GPS...");
     return this.data;
   }
 	/* PRIVATE (i.e. sensor specific) methods */
@@ -134,24 +131,25 @@ class SensorGPS {
     
     document.getElementById("gpsTimestamp").textContent = "Timestamp: " + Date.now();
   
-    var gps_dataframe = {time_ms: new Date().getTime(),
-    latitude: position.coords.latitude,
-    longitude: position.coords.longitude,
-    accuracy: position.coords.accuracy,
-    altitude: position.coords.altitude,
-    altitudeAccuracy: position.coords.altitudeAccuracy,
-    heading: position.coords.heading,
-    speed: position.coords.speed,
-    timestamp: position.timestamp,
-    easting: utm_data.easting,
-    northing: utm_data.northing,
-    zoneNum: utm_data.zoneNum,
-    easting_offset: (utm_data.easting-this.utm_easting),
-    northing_offset: (utm_data.northing-this.utm_northing)};
 
     if(this.isRecording)
     {
-      this.data.push(dataframe);
+      var gps_dataframe = {time_ms: new Date().getTime(),
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        altitude: position.coords.altitude,
+        altitudeAccuracy: position.coords.altitudeAccuracy,
+        heading: position.coords.heading,
+        speed: position.coords.speed,
+        timestamp: position.timestamp,
+        easting: utm_data.easting,
+        northing: utm_data.northing,
+        zoneNum: utm_data.zoneNum,
+        easting_offset: (utm_data.easting-this.utm_easting),
+        northing_offset: (utm_data.northing-this.utm_northing)};
+    
+      this.data.push(gps_dataframe);
     }
   }
   onGeolocationError(error) {

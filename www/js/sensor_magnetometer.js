@@ -1,36 +1,111 @@
 class SensorMagnetometer {
-    constructor(elementID) {
-      this.elementID = elementID;
-      this.element = document.getElementById(this.elementID);
-      this.isEnabled = false;
+  constructor(elementID) {
+    this.elementID = elementID;
+    this.element = document.getElementById(this.elementID);
+    this.isEnabled = false;
+    this.isAvailable = false;
 
-      this.isRecording = false;
-      this.data = new Array();
-      
-      this.renderHTML();
-    }
+    this.isRecording = false;
+    this.data = new Array();
+
+    // Magnetometer specific member variables
+    try {
+      this.magnetometer = new Magnetometer({ referenceFrame: 'device', frequency: 60 });
+
+      this.magnetometer.addEventListener('error', error => {
+        // Handle runtime errors.
+        if (e.error.name === 'NotAllowedError') {
+            // Branch to code for requesting permission.
+        } else if (e.error.name === 'NotReadableError' ) {
+            log('Cannot connect to the magnetometer.');
+        }
+      });
   
-      /* GLOBAL / PUBLIC methods */
-    enable() {
-      log("Magnetometer enabled");
-      this.isEnabled = true;
-      this.renderHTML();
-    }
-    disable() {
-      log("Magnetometer disabled");
-      this.isEnabled = false;
-      this.renderHTML();
-    }
+      this.magnetometer.addEventListener('reading', ev => {
+        if(this.isRecording)
+        {
+          var magnetometer_dataframe = {time_ms: new Date().getTime(),
+            x: this.magnetometer.x,
+            y: this.magnetometer.y,
+            z: this.magnetometer.z
+          };
+          this.data.push(magnetometer_dataframe);
+        }
+        var dataHTML = "";
+        
+        dataHTML += "Magnetic field along the X-axis<br />" + this.magnetometer.x + " μT.<br />";
+        dataHTML += "Magnetic field along the Y-axis<br />" + this.magnetometer.y + " μT.<br />";
+        dataHTML += "Magnetic field along the Z-axis<br />" + this.magnetometer.z + " μT.";
     
-    update() {
-      log("Magnetometer updated");
+        document.getElementById("magnetometerData").innerHTML = dataHTML;
+      });
+  
+      window.addEventListener("compassneedscalibration",function(event) {
+        // ask user to wave device in a figure-eight motion  
+        event.preventDefault();
+    }, true);
+      this.isAvailable = true;
+      log("Magnetometer constructor called!");
+    } catch (error) {
+      // Handle construction errors.
+      if (error.name === 'SecurityError') {
+        // See the note above about feature policy.
+        log('Magnetometer construction was blocked by a feature policy.');
+      } else if (error.name === 'ReferenceError') {
+        log('Magnetometer is not supported by the User Agent.');
+      } else {
+        log(error);
+        throw error;
+      }
     }
-    
-    renderHTML() {
-      log("Magnetometer rendered");
+    this.renderHTML();
+  }
+  
+  /* GLOBAL / PUBLIC methods */
+  enable() {
+    if(this.isAvailable == false)
+    {
+      return;
+    }
       
-      var html = '';
+    log("Magnetometer enabled");
+    this.isEnabled = true;
+    this.renderHTML();
 
+    this.magnetometer.start();
+  }
+  disable() {
+    if(this.isAvailable == false)
+    {
+      return;
+    }
+      
+    log("Magnetometer disabled");
+    this.isEnabled = false;
+    this.renderHTML();
+
+    this.magnetometer.stop();
+  }
+  
+  toggleRecording(record) {
+    this.isRecording = record;
+    if(record)
+    {
+      log("Magnetometer recording started.");
+    }
+    else
+    {
+      log("Magnetometer recording stopped.")
+    }
+  }
+    
+  renderHTML() {
+    log("Magnetometer rendered");
+    
+    var html = '';
+    
+    if(this.isAvailable)
+    {
       html += '<div class="card mb-3 rounded-3 shadow-sm">';
       html += ' <div class="card-header py-3">';
       html += '   <h4 class="my-0 fw-normal">Magnetometer</h4>';
@@ -48,77 +123,30 @@ class SensorMagnetometer {
       html += '   </div>';
       html += ' </div>';
       html += ' <div class="card-body">';
-      html += '   <h1 class="card-title pricing-card-title" id="gyroscopeTimestamp">{TIMESTAMP}</h1>';
-      html += '   <p id="magnetometerData">No Mag data yet.</p>';
-      if(this.isEnabled)
-      {
-        html += '   <button id="btnEnableMagnetometer" onclick="javascript:sensorMagnetometer.disable();">Disable Magnetometer Sensor</button>';
-      }
-      else
-      {
-        html += '   <button id="btnDisableMagnetometer" onclick="javascript:sensorMagnetometer.enable();">Enable Magnetometer Sensor</button>';
-      }
+      html += '   <h1 id="magnetometerTimestamp" class="card-title pricing-card-title">{TIMESTAMP}</h1>';
+      html += '   <p id="magnetometerData">No Magnetometer data yet.</p>';
       html += ' </div>';
       html += '</div>';
-
-      this.element.innerHTML = html;
     }
-    save() {
-      log("Magnetometer saved");
+    else
+    {
+      html += '<div class="card mb-3 rounded-3 shadow-sm">';
+      html += ' <div class="card-header py-3">';
+      html += '   <h4 class="my-0 fw-normal">Magnetometer</h4>';
+      html += ' </div>';
+      html += ' <div class="card-body">';
+      html += '   <p id="magnetometerData">Magnetometer is not available on this device.</p>';
+      html += ' </div>';
+      html += '</div>';
     }
-      /* PRIVATE (sensor specific) methods */
-  
-  
-  
+    
+    this.element.innerHTML = html;
   }
-  
-  
-
-/* 
-
-let magnetometer = null;
-let magnetometer_debug = document.getElementById("magnetometerElement");
-try {
-    magnetometer = new Magnetometer({ referenceFrame: 'device', frequency: 60 });
-    magnetometer.addEventListener('error', event => {
-        // Handle runtime errors.
-        if (event.error.name === 'NotAllowedError') {
-            // Branch to code for requesting permission.
-        } else if (event.error.name === 'NotReadableError' ) {
-            console.log('Cannot connect to the sensor.');
-        }
-    });
-    magnetometer.addEventListener('reading', e => {
-		magnetometer_debug.innerHTML = "Magnetic field along the X-axis<br />" + magnetometer.x + " μT.<br />" + "Magnetic field along the Y-axis<br />" + magnetometer.y + " μT.<br />" + "Magnetic field along the Z-axis<br />" + magnetometer.z + " μT.";
-
-
-        magnetometer_dataframe = {time_ms: new Date().getTime(),
-            x: magnetometer.x,
-            y: magnetometer.y,
-            z: magnetometer.z
-        };
-        sensorRecorder.onMagnetometerData(magnetometer_dataframe);
-          
-
-
-    });
-    magnetometer.start();
-} catch (error) {
-    // Handle construction errors.
-    if (error.name === 'SecurityError') {
-        // See the note above about feature policy.
-        console.log('Magnetometer construction was blocked by a feature policy.');
-    } else if (error.name === 'ReferenceError') {
-        console.log('Magnetometer is not supported by the User Agent.');
-    } else {
-        throw error;
-    }
-	magnetometer_debug.innerHTML = error;
+  getData() {
+    log("Exporting Magnetometer...");
+    return this.data;
+  }
+  /* PRIVATE (sensor specific) methods */
 }
-
-*/
-
-
-
 
 
