@@ -7,5 +7,5 @@ This work was inspired by the GVINS-System from https://github.com/HKUST-Aerial-
 
 
 ## Android version (Google Play Store)
-TODO (add link)
+https://play.google.com/store/apps/details?id=com.lwtv.gvins_recorder&gl=DE
 
