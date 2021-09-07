@@ -1,1 +1,1 @@
-cordova create PCV_Quiz com.lwtv.pcv_quiz PCV_Quiz
+cordova create CordovaTestProject com.lwtv.cordova_test_project CordovaTestProject

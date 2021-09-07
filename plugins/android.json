@@ -7,7 +7,18 @@
     "files": {}
   },
   "installed_plugins": {
+    "cordova-plugin-camera": {
+      "ANDROID_SUPPORT_V4_VERSION": "27.+",
+      "PACKAGE_NAME": "com.lwtv.gvins_recorder"
+    },
+    "cordova-plugin-geolocation": {
+      "GPS_REQUIRED": "false",
+      "PACKAGE_NAME": "com.lwtv.gvins_recorder"
+    },
     "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.lwtv.gvins_recorder"
+    },
+    "cordova-plugin-browsersync": {
       "PACKAGE_NAME": "com.lwtv.gvins_recorder"
     }
   },

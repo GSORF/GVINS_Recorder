@@ -1,18 +1,18 @@
 {
     "android": {
         "debug": {
-            "keystore": "../CUSTOM_KEYSTORE.keystore",
-            "storePassword": "PASSWORD_SECRET",
-            "alias": "ALIAS_SECRET",
-            "password" : "PASSWORD_SECRET",
+            "keystore": "../NAME-mobileapps.keystore",
+            "storePassword": "meinPasswort",
+            "alias": "NAMEmobileapps",
+            "password" : "meinPasswort",
             "keystoreType": "",
             "packageType": "apk"
         },
         "release": {
-            "keystore": "../CUSTOM_KEYSTORE.keystore",
-            "storePassword": "PASSWORD_SECRET",
-            "alias": "ALIAS_SECRET",
-            "password" : "PASSWORD_SECRET",
+            "keystore": "../NAME-mobileapps.keystore",
+            "storePassword": "meinPasswort",
+            "alias": "NAMEmobileapps",
+            "password" : "meinPasswort",
             "keystoreType": "",
             "packageType": "bundle"
         }
