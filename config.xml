@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.lwtv.gvins_recorder" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.lwtv.gvins_recorder" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>GVINS-Recorder</name>
     <description>
-        A recording app for synchronized GPS, Visual and Inertial Measurement.
+        A recording app for synchronized GPS, Visual and Inertial (GVINS) measurements.
     </description>
     <author email="Redaktion@LwTV.de" href="http://lwtv.de">
         Langwasser TV Redaktion

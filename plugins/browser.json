@@ -16,6 +16,9 @@
     },
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "com.lwtv.gvins_recorder"
+    },
+    "cordova-plugin-device-motion": {
+      "PACKAGE_NAME": "com.lwtv.gvins_recorder"
     }
   },
   "dependent_plugins": {}
