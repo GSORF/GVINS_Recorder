@@ -17,7 +17,7 @@ class SensorMagnetometer {
         if (e.error.name === 'NotAllowedError') {
             // Branch to code for requesting permission.
         } else if (e.error.name === 'NotReadableError' ) {
-            log('Cannot connect to the magnetometer.');
+            log('Cannot connect to the magnetometer.', true);
         }
       });
   
@@ -30,6 +30,7 @@ class SensorMagnetometer {
             z: this.magnetometer.z
           };
           this.data.push(magnetometer_dataframe);
+          sensorRecorder.onMagnetometerData(this.data);
         }
         var dataHTML = "";
         
@@ -38,6 +39,7 @@ class SensorMagnetometer {
         dataHTML += "Magnetic field along the Z-axis<br />" + this.magnetometer.z + " μT.";
     
         document.getElementById("magnetometerData").innerHTML = dataHTML;
+        document.getElementById("magnetometerTimestamp").textContent = "Timestamp: " + Date.now();
       });
   
       window.addEventListener("compassneedscalibration",function(event) {
@@ -50,11 +52,11 @@ class SensorMagnetometer {
       // Handle construction errors.
       if (error.name === 'SecurityError') {
         // See the note above about feature policy.
-        log('Magnetometer construction was blocked by a feature policy.');
+        log('Magnetometer construction was blocked by a feature policy.', true);
       } else if (error.name === 'ReferenceError') {
-        log('Magnetometer is not supported by the User Agent.');
+        log('Magnetometer is not supported by the User Agent.', true);
       } else {
-        log(error);
+        log(error, true);
         throw error;
       }
     }

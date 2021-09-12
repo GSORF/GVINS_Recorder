@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.lwtv.gvins_recorder" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.lwtv.gvins_recorder" version="1.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>GVINS-Recorder</name>
     <description>
-        A recording app for synchronized GPS, Visual and Inertial (GVINS) measurements.
+        A recording app for GPS, Visual and Inertial (GVINS) measurements with a common timestamp.
     </description>
     <author email="Redaktion@LwTV.de" href="http://lwtv.de">
         Langwasser TV Redaktion
@@ -11,7 +11,7 @@
     <access origin="*" />
 	
 	<preference name="android-targetSdkVersion" value="31" />
-	<preference name="android-minSdkVersion" value="14" />
+	<preference name="android-minSdkVersion" value="21" />
 	
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -27,31 +27,29 @@
         <allow-intent href="itms-apps:*" />
     </platform>
 	
-	<!-- IOS  camera access  , for cordova camera plugin -->
+	<!-- IOS  camera access, for cordova camera plugin -->
     <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
-        <string>need camera access to take pictures</string>
+        <string>As this app records camera images it needs access to it.</string>
     </edit-config>
 
     <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
-        <string>need photo library access to get pictures from there</string>
+        <string>Access to the photo library is necessary in order to select images stored on the phone</string>
     </edit-config>
     <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
-        <string>need photo library access to save pictures there</string>
+        <string>Access to the photo library is necessary in order to select images stored on the phone</string>
     </edit-config>
 
+    <!-- Enable Geolocation for iOS , set the value to true , it seems there is a problem , with geolocation enabled in this plugin . -->
     <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
-        <string>need location access to find things nearby</string>
+        <string>This app needs access to location in order to measure and store GPS measurements.</string>
     </edit-config>
 	<edit-config target="NSLocationAlwaysAndWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
-		<string>need location access to find things nearby</string>
+		<string>This app needs access to location in order to measure and store GPS measurements.</string>
 	</edit-config>
 	<edit-config target="NSLocationAlwaysUsageDescription" file="*-Info.plist" mode="merge">
-		<string>need location access to find things nearby</string>
+		<string>This app needs access to location in order to measure and store GPS measurements.</string>
 	</edit-config>
 
     <preference name="CameraUsesGeolocation" value="false" />
-    <!-- Enable Geolocation for iOS , set the value to
-         true , it seems there is a problem , with geolocation
-         enabled in this plugin . -->
-<!-- IOS  camera access  , for cordova camera plugin -->
+    
 </widget>

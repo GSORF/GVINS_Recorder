@@ -7,14 +7,14 @@ class SensorRecorder {
         this.isRecording = false;
         this.data = new Array();
         
-        this.renderHTML();
-
         // Recorder specific member variables
-        this.dataVideo = new Array();
+        this.dataCamera = new Array();
         this.dataAccelerometer = new Array();
         this.dataGyroscope = new Array();
         this.dataMagnetometer = new Array();
         this.dataGPS = new Array();
+
+        this.renderHTML();
       }
     
         /* GLOBAL / PUBLIC methods */
@@ -55,35 +55,50 @@ class SensorRecorder {
         html += '   </div>';
         html += ' </div>';
         html += ' <div class="card-body">';
-        html += '   <h1 id="recorderTimestamp" class="card-title pricing-card-title">{TIMESTAMP}</h1>';
-        html += '   <input type="checkbox" id="record_camera" name="cbRecordCamera" checked><label for="record_camera">&nbsp;Camera</label><br />';
-        html += '   <input type="checkbox" id="record_gps" name="cbRecordGPS" checked><label for="record_gps">&nbsp;GPS</label><br />';
-        html += '   <input type="checkbox" id="record_accelerometer" name="cbRecordAccelerometer" checked><label for="record_accelerometer">&nbsp;Accelerometer</label><br />';
-        html += '   <input type="checkbox" id="record_gyroscope" name="cbRecordGyroscope" checked><label for="record_gyroscope">&nbsp;Gyroscope</label><br />';
-        html += '   <input type="checkbox" id="record_magnetometer" name="cbRecordGyroscope" checked><label for="record_magnetometer">&nbsp;Magnetometer</label><br />';
-
-        if(this.isRecording)
-        {
-          html += '   <button id="btnToggleRecording" onclick="javascript:sensorRecorder.onToggleRecording(false);">Stop recording</button>';
-        }
-        else
-        {
-          html += '   <button id="btnToggleRecording" onclick="javascript:sensorRecorder.onToggleRecording(true);">Start recording</button>';
-        }
-        
-        html += '   <button id="btnDownloadRecording" onclick="javascript:sensorRecorder.onDownloadRecording();">Download recording</button>';
         if(this.isEnabled)
         {
-          html += '   <button id="btnEnableSensorRecorder" onclick="javascript:sensorRecorder.disable();">Disable Sensor Recorder</button>';
+          html += '   <h1 id="recorderTimestamp" class="card-title pricing-card-title">{TIMESTAMP}</h1>';
+          html += '   <input type="checkbox" id="record_camera" name="cbRecordCamera" checked><label for="record_camera">&nbsp;Camera</label><br />';
+          html += '   <input type="checkbox" id="record_gps" name="cbRecordGPS" checked><label for="record_gps">&nbsp;GPS</label><br />';
+          html += '   <input type="checkbox" id="record_accelerometer" name="cbRecordAccelerometer" checked><label for="record_accelerometer">&nbsp;Accelerometer</label><br />';
+          html += '   <input type="checkbox" id="record_gyroscope" name="cbRecordGyroscope" checked><label for="record_gyroscope">&nbsp;Gyroscope</label><br />';
+          html += '   <input type="checkbox" id="record_magnetometer" name="cbRecordGyroscope" checked><label for="record_magnetometer">&nbsp;Magnetometer</label><br />';
+
+          if(this.isRecording)
+          {
+            html += '   <button id="btnToggleRecording" onclick="javascript:sensorRecorder.onToggleRecording(false);">Stop recording</button>';
+          }
+          else
+          {
+            html += '   <button id="btnToggleRecording" onclick="javascript:sensorRecorder.onToggleRecording(true);">Start recording</button>';
+            var totalSizeBytes = 0;
+            totalSizeBytes += JSON.stringify(this.dataCamera).replace(/[\[\]\,\"]/g,'').length;
+            totalSizeBytes += JSON.stringify(this.dataAccelerometer).replace(/[\[\]\,\"]/g,'').length;
+            totalSizeBytes += JSON.stringify(this.dataGyroscope).replace(/[\[\]\,\"]/g,'').length;
+            totalSizeBytes += JSON.stringify(this.dataMagnetometer).replace(/[\[\]\,\"]/g,'').length;
+            totalSizeBytes += JSON.stringify(this.dataGPS).replace(/[\[\]\,\"]/g,'').length;
+
+            var totalSizeKiloBytes = totalSizeBytes / 1024.0;
+            var totalSizeMegaBytes = totalSizeKiloBytes / 1024.0;
+
+            
+            html += '   <button id="btnDownloadRecording" onclick="javascript:sensorRecorder.onDownloadRecording();">Download recording (' + totalSizeMegaBytes + ' MB)</button>';
+          }
+        
         }
         else
         {
-          html += '   <button id="btnDisableSensorRecorder" onclick="javascript:sensorRecorder.enable();">Enable Sensor Recorder</button>';
+          html += '   <p>Please enable the sensor recorder in order to display options.</p>';
         }
         html += ' </div>';
         html += '</div>';
   
         this.element.innerHTML = html;
+        if(this.isEnabled)
+        {
+          this.onDataUpdated();
+        }
+
       }
       save() {
         log("Magnetometer saved");
@@ -92,65 +107,46 @@ class SensorRecorder {
     
     
     /*
-        Video Callback: Save current video frame
+        Camera Callback: Display current data count
     */
-    onVideoData(dataframe)
+    onCameraData(data)
     {
-        if(this.isRecording)
-        {
-            this.dataVideo.push(dataframe);
-            console.log("Video length:", this.dataVideo.length);
-            this.onDataUpdated();
-        }
+      this.dataCamera = data;
+      this.onDataUpdated();
     }
 
     /*
-        Accelerometer Callback: Save current video frame
+        Accelerometer Callback: Display current data count
     */
-    onAccelerometerData(dataframe)
+    onAccelerometerData(data)
     {
-        if(this.isRecording)
-        {
-            this.dataAccelerometer.push(dataframe);
-            console.log("Accelerometer length:", this.dataAccelerometer.length);
-            this.onDataUpdated();
-        }
+      this.dataAccelerometer = data;
+      this.onDataUpdated();
     }
     /*
-        Gyroscope Callback: Save current video frame
+        Gyroscope Callback: Display current data count
     */
-    onGyroscopeData(dataframe)
+    onGyroscopeData(data)
     {
-        if(this.isRecording)
-        {
-            this.dataGyroscope.push(dataframe);
-            console.log("Gyroscope length:", this.dataGyroscope.length);
-            this.onDataUpdated();
-        }
+      this.dataGyroscope = data;
+      this.onDataUpdated();
+      
     }
     /*
-        Magnetometer Callback: Save current video frame
+        Magnetometer Callback: Display current data count
     */
-    onMagnetometerData(dataframe)
+    onMagnetometerData(data)
     {
-        if(this.isRecording)
-        {
-            this.dataMagnetometer.push(dataframe);
-            console.log("Magnetometer length:", this.dataMagnetometer.length);
-            this.onDataUpdated();
-        }
+      this.dataMagnetometer = data;
+      this.onDataUpdated();
     }
     /*
-        GPS Callback: Save current video frame
+        GPS Callback: Display current data count
     */
-    onGPSData(dataframe)
+    onGPSData(data)
     {
-        if(this.isRecording)
-        {
-            this.dataGPS.push(dataframe);
-            console.log("GPS length:", this.dataGPS.length);
-            this.onDataUpdated();
-        }
+      this.dataGPS = data;
+      this.onDataUpdated();
     }
                 
     onToggleRecording(doRecording)
@@ -158,34 +154,43 @@ class SensorRecorder {
 
       this.isRecording = doRecording;
       
-      var recordCamera = document.getElementById("record_camera").checked;
-      var recordGPS = document.getElementById("record_gps").checked;
-      var recordAcclerometer = document.getElementById("record_accelerometer").checked;
-      var recordGyroscope = document.getElementById("record_gyroscope").checked;
-      var recordMagnetometer = document.getElementById("record_magnetometer").checked;
+      if(this.isRecording)
+      {
+        var recordCamera = document.getElementById("record_camera").checked;
+        var recordGPS = document.getElementById("record_gps").checked;
+        var recordAcclerometer = document.getElementById("record_accelerometer").checked;
+        var recordGyroscope = document.getElementById("record_gyroscope").checked;
+        var recordMagnetometer = document.getElementById("record_magnetometer").checked;
 
-      //sensorCamera.toggleRecording(recordCamera);
-      sensorGPS.toggleRecording(recordGPS);
-      sensorAccelerometer.toggleRecording(recordAcclerometer);
-      sensorGyroscope.toggleRecording(recordGyroscope);
-      sensorMagnetometer.toggleRecording(recordMagnetometer);
-    
+        sensorCamera.toggleRecording(recordCamera);
+        sensorGPS.toggleRecording(recordGPS);
+        sensorAccelerometer.toggleRecording(recordAcclerometer);
+        sensorGyroscope.toggleRecording(recordGyroscope);
+        sensorMagnetometer.toggleRecording(recordMagnetometer);
+      }
+      else
+      {
+        sensorCamera.toggleRecording(false);
+        sensorGPS.toggleRecording(false);
+        sensorAccelerometer.toggleRecording(false);
+        sensorGyroscope.toggleRecording(false);
+        sensorMagnetometer.toggleRecording(false);
+      }
+
       this.renderHTML();
-      log("Toggling recording:", this.isRecording);
+      log("Toggling recording: " + this.isRecording);
     }
 
 
     onDownloadRecording()
     {
-
-
-      //this.dataVideo = sensorCamera.getData();
+      this.dataCamera = sensorCamera.getData();
       this.dataGPS = sensorGPS.getData();
       this.dataAccelerometer = sensorAccelerometer.getData();
       this.dataGyroscope = sensorGyroscope.getData();
       this.dataMagnetometer = sensorMagnetometer.getData();
 
-      var data_string = JSON.stringify({ gps: this.dataGPS, video: this.dataVideo, accelerometer: this.dataAccelerometer, gyroscope: this.dataGyroscope, magnetometer: this.dataMagnetometer});
+      var data_string = JSON.stringify({ gps: this.dataGPS, camera: this.dataCamera, accelerometer: this.dataAccelerometer, gyroscope: this.dataGyroscope, magnetometer: this.dataMagnetometer});
       var element = document.createElement('a');
                 element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(data_string));
                 element.setAttribute('download', "filename.json");
@@ -195,7 +200,17 @@ class SensorRecorder {
     }
     onDataUpdated()
     {
-        document.getElementById("recorder_timestamp").innerText = "Video (" + this.dataVideo.length + "), GPS (" + this.dataGPS.length + "), Accelerometer (" + this.dataAccelerometer.length  + "), Gyroscope (" + this.dataGyroscope.length + ")";
+      var html = "";
+      if(this.isRecording)
+      {
+        html += "[RECORDING] ";
+      }
+      html += "Camera (" + this.dataCamera.length;
+      html += "), GPS (" + this.dataGPS.length;
+      html += "), Accelerometer (" + this.dataAccelerometer.length;
+      html += "), Gyroscope (" + this.dataGyroscope.length + ")";
+
+      document.getElementById("recorderTimestamp").innerText = html;
     }
 };
 

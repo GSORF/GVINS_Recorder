@@ -17,7 +17,7 @@ class SensorAccelerometer {
         if (e.error.name === 'NotAllowedError') {
             // Branch to code for requesting permission.
         } else if (e.error.name === 'NotReadableError' ) {
-            log('Cannot connect to the accelerometer.');
+            log('Cannot connect to the accelerometer.', true);
         }
       });
 
@@ -31,14 +31,16 @@ class SensorAccelerometer {
             z: this.accelerometer.z
           };
           this.data.push(accelerometer_dataframe);
+          sensorRecorder.onAccelerometerData(this.data);
         }
         var dataHTML = "";
-    
+
         dataHTML += "Acceleration along the X-axis<br />" + this.accelerometer.x + " m/s2.<br />";
         dataHTML += "Acceleration along the Y-axis<br />" + this.accelerometer.y + " m/s2.<br />";
         dataHTML += "Acceleration along the Z-axis<br />" + this.accelerometer.z + " m/s2.";
     
         document.getElementById("accelerometerData").innerHTML = dataHTML;
+        document.getElementById("accelerometerTimestamp").textContent = "Timestamp: " + Date.now();
       });
       
       this.isAvailable = true;
@@ -47,11 +49,11 @@ class SensorAccelerometer {
       // Handle construction errors.
       if (error.name === 'SecurityError') {
         // See the note above about feature policy.
-        log('Accelerometer construction was blocked by a feature policy.');
+        log('Accelerometer construction was blocked by a feature policy.', true);
       } else if (error.name === 'ReferenceError') {
-        log('Accelerometer is not supported by the User Agent.');
+        log('Accelerometer is not supported by the User Agent.', true);
       } else {
-        log(error);
+        log(error, true);
         throw error;
       }
     }

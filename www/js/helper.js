@@ -2,10 +2,15 @@
 
 // Log a string to the User Interface
 logMessages = new Array();
-function log(message)
+function log(message, error=false)
 {
     var maxLength = 200;
     var datum = new Date().toLocaleString();
+    if(error)
+    {
+        message = '<span style="color:darkred;">' + message + '</span>';
+    }
+    
     logMessages.push('<span style="color:darkred;">' + datum + '</span>: ' + message);
 
     if(logMessages.length > maxLength)

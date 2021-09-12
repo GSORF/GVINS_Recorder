@@ -16,6 +16,8 @@ var sensorRecorder = null;
 
 var viewer3D = null;
 
+/* 
+
 //var cameraSensor = null;
 
 var frame1 = null;
@@ -161,23 +163,25 @@ function processVideo() {
 	}
 	// schedule the next one.
 	let delay = 1000/FPS - (Date.now() - begin);
-	/*
+	
     
-    cv.Canny(dstC1, dstC1, 150, 300, 3, false);
+    //cv.Canny(dstC1, dstC1, 150, 300, 3, false);
     
-    cv.imshow('canvasOutput', dstC1);
-	cv.imshow('canvasOutput', dstC1);
-	*/
+    //cv.imshow('canvasOutput', dstC1);
+	//cv.imshow('canvasOutput', dstC1);
+	
 	document.getElementById("camera_timestamp").textContent = delay;
     requestAnimationFrame(processVideo);
 	
 }
 
+
+
 function callback_video(stream, video)
 {
 	console.log("callback_video");
-	/* console.log("callback_video", ev.timeStamp);
-	 */
+	console.log("callback_video", ev.timeStamp);
+	
 
 	height = video.videoHeight * 0.25;
     width = video.videoWidth * 0.25;
@@ -193,7 +197,7 @@ function callback_opencv()
 	console.log("callback_opencv");
 	cameraSensor.startCamera("fhd", callback_video, "videoElement");
 }
-
+*/
 
 
 function main()
@@ -208,6 +212,18 @@ function main()
 	viewer3D = new Viewer3D("divViewer3D");
 
 	
+}
+
+function onDeviceReady( )
+{
+	isDeviceReady = true; 
+	log("CALLING MAIN!");
+	main();
+}
+
+
+
+
 
 	/*
 	// Define a model for linear regression.
@@ -283,16 +299,4 @@ function main()
 	  document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
 	}
 */
-
-
-}
-
-function onDeviceReady( )
-{
-	isDeviceReady = true; 
-	log("CALLING MAIN!");
-	main();
-}
-
-
 

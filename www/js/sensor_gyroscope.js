@@ -17,7 +17,7 @@ class SensorGyroscope {
         if (e.error.name === 'NotAllowedError') {
             // Branch to code for requesting permission.
         } else if (e.error.name === 'NotReadableError' ) {
-            log('Cannot connect to the gyroscope.');
+            log('Cannot connect to the gyroscope.', true);
         }
       });
 
@@ -31,6 +31,7 @@ class SensorGyroscope {
             z: this.gyroscope.z
           };
           this.data.push(gyroscope_dataframe);
+          sensorRecorder.onGyroscopeData(this.data);
         }
         var dataHTML = "";
         
@@ -39,6 +40,7 @@ class SensorGyroscope {
         dataHTML += "Angular velocity along the Z-axis<br />" + this.gyroscope.z + " rad/s.";
     
         document.getElementById("gyroscopeData").innerHTML = dataHTML;
+        document.getElementById("gyroscopeTimestamp").textContent = "Timestamp: " + Date.now();
       });
 
       this.isAvailable = true;
@@ -47,11 +49,11 @@ class SensorGyroscope {
       // Handle construction errors.
       if (error.name === 'SecurityError') {
         // See the note above about feature policy.
-        log('Gyroscope construction was blocked by a feature policy.');
+        log('Gyroscope construction was blocked by a feature policy.', true);
       } else if (error.name === 'ReferenceError') {
-        log('Gyroscope is not supported by the User Agent.');
+        log('Gyroscope is not supported by the User Agent.', true);
       } else {
-        log(error);
+        log(error, true);
         throw error;
       }
     }
