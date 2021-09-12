@@ -30,7 +30,7 @@ class SensorMagnetometer {
             z: this.magnetometer.z
           };
           this.data.push(magnetometer_dataframe);
-          sensorRecorder.onMagnetometerData(this.data);
+          sensorRecorder.onMagnetometerData(this.data.length);
         }
         var dataHTML = "";
         

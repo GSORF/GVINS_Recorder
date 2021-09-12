@@ -7,12 +7,18 @@ class SensorRecorder {
         this.isRecording = false;
         this.data = new Array();
         
-        // Recorder specific member variables
+        // Recorder specific member variables (number of measurements)
         this.dataCamera = new Array();
         this.dataAccelerometer = new Array();
         this.dataGyroscope = new Array();
         this.dataMagnetometer = new Array();
         this.dataGPS = new Array();
+
+        this.dataCameraLength = 0;
+        this.dataAccelerometerLength = 0;
+        this.dataGyroscopeLength = 0;
+        this.dataMagnetometerLength = 0;
+        this.dataGPSLength = 0;
 
         this.renderHTML();
       }
@@ -109,43 +115,43 @@ class SensorRecorder {
     /*
         Camera Callback: Display current data count
     */
-    onCameraData(data)
+    onCameraData(length)
     {
-      this.dataCamera = data;
+      this.dataCameraLength = length;
       this.onDataUpdated();
     }
 
     /*
         Accelerometer Callback: Display current data count
     */
-    onAccelerometerData(data)
+    onAccelerometerData(length)
     {
-      this.dataAccelerometer = data;
+      this.dataAccelerometerLength = length;
       this.onDataUpdated();
     }
     /*
         Gyroscope Callback: Display current data count
     */
-    onGyroscopeData(data)
+    onGyroscopeData(length)
     {
-      this.dataGyroscope = data;
+      this.dataGyroscopeLength = length;
       this.onDataUpdated();
       
     }
     /*
         Magnetometer Callback: Display current data count
     */
-    onMagnetometerData(data)
+    onMagnetometerData(length)
     {
-      this.dataMagnetometer = data;
+      this.dataMagnetometerLength = length;
       this.onDataUpdated();
     }
     /*
         GPS Callback: Display current data count
     */
-    onGPSData(data)
+    onGPSData(length)
     {
-      this.dataGPS = data;
+      this.dataGPSLength = length;
       this.onDataUpdated();
     }
                 
@@ -175,29 +181,109 @@ class SensorRecorder {
         sensorAccelerometer.toggleRecording(false);
         sensorGyroscope.toggleRecording(false);
         sensorMagnetometer.toggleRecording(false);
+
+        this.dataCamera = sensorCamera.getData();
+        this.dataGPS = sensorGPS.getData();
+        this.dataAccelerometer = sensorAccelerometer.getData();
+        this.dataGyroscope = sensorGyroscope.getData();
+        this.dataMagnetometer = sensorMagnetometer.getData();
       }
 
       this.renderHTML();
       log("Toggling recording: " + this.isRecording);
     }
 
-
     onDownloadRecording()
     {
-      this.dataCamera = sensorCamera.getData();
-      this.dataGPS = sensorGPS.getData();
-      this.dataAccelerometer = sensorAccelerometer.getData();
-      this.dataGyroscope = sensorGyroscope.getData();
-      this.dataMagnetometer = sensorMagnetometer.getData();
-
-      var data_string = JSON.stringify({ gps: this.dataGPS, camera: this.dataCamera, accelerometer: this.dataAccelerometer, gyroscope: this.dataGyroscope, magnetometer: this.dataMagnetometer});
+      this.data = JSON.stringify({ gps: this.dataGPS, camera: this.dataCamera, accelerometer: this.dataAccelerometer, gyroscope: this.dataGyroscope, magnetometer: this.dataMagnetometer});
+      /* 
       var element = document.createElement('a');
                 element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(data_string));
                 element.setAttribute('download', "filename.json");
                 document.body.appendChild(element);
                 element.click();
                 document.body.removeChild(element);
+*/
+        var type = LocalFileSystem.PERSISTENT;
+        var size = 0;
+        var timestamp = new Date().getTime();
+        this.filename = 'measurement_' + timestamp + '.txt';
+        window.requestFileSystem(type, size, this.fileSuccessCallback, this.fileErrorCallback);
+              
     }
+
+    fileSuccessCallback(filesystem)
+    {
+      /* 
+        console.log(filesystem);
+        log('file system open: ' + filesystem.name);
+        filesystem.root.getFile("newPersistentFile.json", { create: true }, function (fileEntry) {
+    
+            log("fileEntry is file?" + fileEntry.isFile.toString() + " - " + fileEntry.fullPath + " - " + fileEntry.nativeURL);
+            // fileEntry.name == 'someFile.txt'
+            // fileEntry.fullPath == '/someFile.txt'
+            sensorRecorder.writeFile(fileEntry, sensorRecorder.data);
+    
+        }, sensorRecorder.onErrorCreateFile);
+    
+      */
+        log("Saving " + sensorRecorder.filename);
+        filesystem.root.getFile(sensorRecorder.filename, {create: true}, function(fileEntry) {
+
+          sensorRecorder.writeFile(fileEntry, sensorRecorder.data);
+
+       }, sensorRecorder.fileErrorCallback);
+
+    }
+
+    fileErrorCallback(error)
+    {
+      alert("ERROR: " + error + "-" + error.code);
+    }
+
+    writeFile(fileEntry, dataObj) {
+      // Create a FileWriter object for our FileEntry (log.txt).
+      fileEntry.createWriter(function (fileWriter) {
+  
+          fileWriter.onwriteend = function() {
+              log("Successful file write... " + fileWriter + "-" + fileEntry.fullPath + " - " + fileEntry.nativeURL);
+              
+              var url = fileEntry.toURL();
+              var mimeType = 'text/plain';
+              cordova.plugins.fileOpener2.open(url, mimeType, {
+                error: function error(err) {
+                  log("Unable to open the file" + err, true);
+                  alert("Unable to open the file");
+                },
+                success: function success() {
+                  log("success with opening the file " + url);
+                }
+              });
+          };
+  
+          fileWriter.onerror = function (e) {
+              log("Failed file write: " + e.toString());
+          };
+  
+          // If data object is not passed in,
+          // create a new Blob instead.
+          if (!dataObj) {
+              dataObj = new Blob(['some example data'], { type: 'text/plain' });
+          }
+
+          fileWriter.write(dataObj);
+      }, sensorRecorder.onErrorCreateFile);
+    }
+    onErrorCreateFile(error)
+    {
+      log("onErrorCreateFile: " + error.code + " - " + error);
+    }
+    onErrorLoadFs()
+    {
+      log("onErrorLoadFs");
+    }
+
+
     onDataUpdated()
     {
       var html = "";
@@ -205,10 +291,10 @@ class SensorRecorder {
       {
         html += "[RECORDING] ";
       }
-      html += "Camera (" + this.dataCamera.length;
-      html += "), GPS (" + this.dataGPS.length;
-      html += "), Accelerometer (" + this.dataAccelerometer.length;
-      html += "), Gyroscope (" + this.dataGyroscope.length + ")";
+      html += "Camera (" + this.dataCameraLength;
+      html += "), GPS (" + this.dataGPSLength;
+      html += "), Accelerometer (" + this.dataAccelerometerLength;
+      html += "), Gyroscope (" + this.dataGyroscopeLength + ")";
 
       document.getElementById("recorderTimestamp").innerText = html;
     }

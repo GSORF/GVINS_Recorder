@@ -31,7 +31,7 @@ class SensorAccelerometer {
             z: this.accelerometer.z
           };
           this.data.push(accelerometer_dataframe);
-          sensorRecorder.onAccelerometerData(this.data);
+          sensorRecorder.onAccelerometerData(this.data.length);
         }
         var dataHTML = "";
 

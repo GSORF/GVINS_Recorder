@@ -122,9 +122,10 @@ class SensorCamera {
       }.bind(html));
       */
       html += '   <h1 id="cameraTimestamp" class="card-title pricing-card-title">{TIMESTAMP}</h1>';
-      html += '   <video id="cameraVideo" autoplay="true" width="640" height="480" controls>Your browser does not support the video tag.</video>';
-      html += '   <canvas id="cameraCanvas" width="640" height="480"></canvas>';
+      html += '   <video id="cameraVideo" autoplay="true" style="display: none;">Your browser does not support the video tag.</video>';
+      html += '   <canvas id="cameraCanvas"></canvas>';
       html += '   <p id="cameraData">No Camera data yet.</p>';
+      html += '   <p id="cameraHint"><small>Hint: On Android please allow camera access in your <em>App Settings</em>.</small></p>';
       html += ' </div>';
       html += '</div>';
   
@@ -133,6 +134,7 @@ class SensorCamera {
       this.video = document.getElementById("cameraVideo");
       this.canvas = document.getElementById("cameraCanvas");
       this.camData = document.getElementById("cameraData");
+      this.camTimestamp = document.getElementById("cameraTimestamp");
       this.context = this.canvas.getContext('2d');
 
       
@@ -168,10 +170,12 @@ class SensorCamera {
                 image: sensorCamera.canvas.toDataURL()};
             
               sensorCamera.data.push(camera_dataframe);
-              sensorRecorder.onCameraData(sensorCamera.data);
+              sensorRecorder.onCameraData(sensorCamera.data.length);
             }
         
-            sensorCamera.camData.innerHTML = sensorCamera.canvas.toDataURL();
+            sensorCamera.camData.innerHTML = sensorCamera.canvas.toDataURL().substring(0,200);
+            sensorCamera.camTimestamp.innerHTML = new Date().getTime();
+
             /*
             console.log(sensorCamera.context);
             console.log(videoSize);

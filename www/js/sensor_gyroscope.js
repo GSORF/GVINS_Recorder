@@ -31,7 +31,7 @@ class SensorGyroscope {
             z: this.gyroscope.z
           };
           this.data.push(gyroscope_dataframe);
-          sensorRecorder.onGyroscopeData(this.data);
+          sensorRecorder.onGyroscopeData(this.data.length);
         }
         var dataHTML = "";
         

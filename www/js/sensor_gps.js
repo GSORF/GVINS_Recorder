@@ -150,7 +150,7 @@ class SensorGPS {
         northing_offset: (utm_data.northing-this.utm_northing)};
     
       this.data.push(gps_dataframe);
-      sensorRecorder.onGPSData(this.data);
+      sensorRecorder.onGPSData(this.data.length);
     }
   }
   onGeolocationError(error) {
