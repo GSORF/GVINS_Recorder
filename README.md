@@ -7,17 +7,22 @@ This work was inspired by the GVINS-System from https://github.com/HKUST-Aerial-
 
 ## Screenshots
 
-How users can record sensor data:
-![Capturing](https://github.com/GSORF/GVINS_Recorder/tree/main/www/images/gvins_recorder_capturing.jpg?raw=true)
+### How users can record sensor data:
 
-Example for Global Positioning System data:
-![GPS](https://github.com/GSORF/GVINS_Recorder/tree/main/www/images/gvins_recorder_gps_data.jpg?raw=true)
+<img src="./images/gvins_recorder_capturing.jpg" alt="Capturing" width="250"/>
 
-Example for Inertial (Accelerometer and Gyroscope) data:
-![Inertial](https://github.com/GSORF/GVINS_Recorder/tree/main/www/images/gvins_recorder_inertial.jpg?raw=true)
+### Example for Global Positioning System data:
 
-How users are asked for permission to use app features (like GPS in this case):
-![Permissions](https://github.com/GSORF/GVINS_Recorder/tree/main/www/images/gvins_recorder_gps_permission.jpg?raw=true)
+<img src="./images/gvins_recorder_gps_data.jpg" alt="GPS" width="250"/>
+
+### Example for Inertial (Accelerometer and Gyroscope) data:
+
+<img src="./images/gvins_recorder_inertial.jpg" alt="Inertial" width="250"/>
+
+### How users are asked for permission to use app features (like GPS in this case):
+
+<img src="./images/gvins_recorder_gps_permission.jpg" alt="Permissions" width="250"/>
+
 
 
 ## Android version (Google Play Store)
