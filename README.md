@@ -26,6 +26,31 @@ https://play.google.com/store/apps/details?id=com.lwtv.gvins_recorder&gl=DE
 
 <img src="./images/gvins_recorder_gps_permission.jpg" alt="Permissions" width="250"/>
 
+## Example of recorded sensor data
+
+A user kindly asked about how the recorded sensor data can be used (Thanks to @belkahorry). It was quite embarrasing, that I did not include an example explaining this. Now you can find a plotting script written in Python in this repository (see in the folder "sample_data").
+
+```console
+foo@bar:~$ python .\parse-GVINS-Recorder-data.py 
+{debug output - example for accelerometer}
+{'time_ms': 1627315164706, 'x': 0.0017453292519943296, 'y': -0.07155849933176751, 'z': 0.0017453292519943296}
+1627315164706.0 ms: 0.0017453292519943296 m/s^2 -0.07155849933176751 m/s^2 0.0017453292519943296 m/s^2
+{...}
+```
+
+The script will write the camera images as .png files on the disk and generate the following plots:
+
+<img src="./images/visualization_accelerometer.png" alt="Permissions" width="650"/>
+
+<img src="./images/visualization_gyroscope.png" alt="Permissions" width="650"/>
+
+<img src="./images/visualization_magnetometer.png" alt="Permissions" width="650"/>
+
+(sorry, my phone does not include a magnetometer)
+
+<img src="./images/visualization_gps.png" alt="Permissions" width="650"/>
+
+
 ## Release Notes
 
 ### Version 1.0.1 (7 September 2021)
