@@ -17,8 +17,12 @@ import matplotlib.pyplot as plt # used to create plots
 GLOBAL Settings - please adjust to your own dataset
 """
 
-DATASET_FILENAME = "example_data.json"
-DATASET_SOURCE_VIDEO = "video"
+# DATASET_FILENAME = "measurement_1649076149745.txt"
+# DATASET_FILENAME = "measurement_1649077802860.txt"
+# DATASET_FILENAME = "measurement_1649078670347.txt"
+# DATASET_FILENAME = "measurement_1649078670347_after_waiting.txt"
+DATASET_FILENAME = "measurement_1649081103265.txt"
+DATASET_SOURCE_VIDEO = "camera"
 DATASET_SOURCE_ACCELEROMETER = "accelerometer"
 DATASET_SOURCE_GYROSCOPE = "gyroscope"
 DATASET_SOURCE_MAGNETOMETER = "magnetometer"
@@ -66,23 +70,23 @@ gps_data = []
 
 ## video frames
 if has_video:
-    video_data = data["video"]
+    video_data = data[DATASET_SOURCE_VIDEO]
     
 ## accelerometer
 if has_accelerometer:
-    accelerometer_data = data["accelerometer"]
+    accelerometer_data = data[DATASET_SOURCE_ACCELEROMETER]
     
 ## gyroscope
 if has_gyroscope:
-    gyroscope_data = data["gyroscope"]
+    gyroscope_data = data[DATASET_SOURCE_GYROSCOPE]
     
 ## magnetometer
 if has_magnetometer:
-    magnetometer_data = data["magnetometer"]
+    magnetometer_data = data[DATASET_SOURCE_MAGNETOMETER]
 
 ## gps
 if has_gps:
-    gps_data = data["gps"]
+    gps_data = data[DATASET_SOURCE_GPS]
 
 """
 Visualization of data
